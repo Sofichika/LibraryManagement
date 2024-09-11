@@ -1,0 +1,15 @@
+add title War and Peace; author Leo Tolstoy; ISBN 9780140447934; genre Novel; year 1869
+add title Harry Potter and the Sorcerer's Stone; author J.K. Rowling; ISBN 9780590353427; genre Fantasy; year 1997
+delete title Pride and Prejudice
+query title To Kill a Mockingbird
+query author F. Scott Fitzgerald
+
+add title The Great Gatsby; author F. Scott Fitzgerald; ISBN 9780743273565; genre American Literature; year 1925
+add title One Hundred Years of Solitude; author Gabriel García Márquez; ISBN 9780060883287; genre Magical Realism; year 1967
+query title War and Peace
+query author Leo Tolstoy
+add title The Hunger Games; author Suzanne Collins; ISBN 9780439023528; genre Young Adult Dystopian; year 2008
+add title The Alchemist; author Paulo Coelho; ISBN 9780062315007; genre Philosophical Fiction; year 1988
+query author J.K. Rowling
+delete title Harry Potter and the Sorcerer's Stone
+delete title One Hundred Years of Solitude
