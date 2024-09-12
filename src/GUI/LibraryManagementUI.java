@@ -36,29 +36,50 @@ public class LibraryManagementUI extends JFrame {
 
         add(buttonPanel, BorderLayout.WEST);
 
-        // Init table
-        tableModel = new BookTableModel();
-        itemTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(itemTable);
+
 
         library = new Library();
         library.clearFiles();
-        library.processInstructions();
-        for (Book book : library.getBooks()) {
-            System.out.println(book);
-            tableModel.addBook(book);
-        }
+        // Init table
+        tableModel = new BookTableModel() {
+            @Override
+            public void fireTableRowsInserted(int firstRow, int lastRow) {
+                super.fireTableRowsInserted(firstRow, lastRow);
+                for (int i = firstRow; i <= lastRow; i++) {
+                    Book book = tableModel.getBookAt(i);
+                    library.addRecord(book);
+                }
+            }
+        };
 
+        tableModel.initBooks(library.getBooks());
+
+        itemTable = new JTable(tableModel);
+        JScrollPane tableScrollPane = new JScrollPane(itemTable);
 
         add(tableScrollPane, BorderLayout.CENTER);
     }
-
     private void handleAction(String action) {
         System.out.println(action + " action triggered");
-        // Implement the actual functionality here
 
-        // Example: Add a new item to the table when "Create" is clicked
-        if (action.equals("Create")) {
+        switch (action) {
+            case "Create":
+                createBook();
+                break;
+            case "Read":
+//                readSelectedBook();
+                break;
+            case "Delete":
+//                deleteSelectedBook();
+                break;
+        }
+    }
+
+    private void createBook() {
+        BookCreationDialog dialog = new BookCreationDialog(this);
+        Book newBook = dialog.showDialog();
+        if (newBook != null && newBook.validate()) {
+            tableModel.addBook(newBook);
         }
     }
 }

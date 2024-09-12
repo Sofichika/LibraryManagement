@@ -14,6 +14,10 @@ public class Library {
         loadSamples();
     }
 
+    public static int getID() {
+        return ID++;
+    }
+
     public boolean addRecord(Book book) {
         return books.add(book);
     }
@@ -66,12 +70,12 @@ public class Library {
             File f = new File("data/books.txt");
             Scanner sc = new Scanner(f);
 
-            Book book = new Book(ID++);
+            Book book = new Book(Library.getID());
             while (sc.hasNext()) {
                 String line = sc.nextLine();
                 if (line.isEmpty()) {
                     addRecord(book);
-                    book = new Book(ID++);
+                    book = new Book(Library.getID());
                     continue;
                 }
                 switch (line) {
@@ -141,7 +145,7 @@ public class Library {
         // Remove 'add ' from cmd
         cmd = cmd.substring(4);
         String[] subCmds = cmd.split(";");
-        Book newBook = new Book(ID++);
+        Book newBook = new Book(Library.getID());
         for (String subCmd : subCmds) {
             try {
                 subCmd = subCmd.trim();

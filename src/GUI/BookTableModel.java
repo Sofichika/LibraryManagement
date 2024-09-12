@@ -14,6 +14,10 @@ class BookTableModel extends AbstractTableModel {
         fireTableRowsInserted(books.size() - 1, books.size() - 1);
     }
 
+    public void initBooks(ArrayList<Book> bs) {
+        books.addAll(bs);
+    }
+
     public void removeBook(int rowIndex) {
         books.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
@@ -41,15 +45,15 @@ class BookTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Book book = books.get(rowIndex);
-        switch (columnIndex) {
-            case 0: return book.getId();
-            case 1: return book.getTitle();
-            case 2: return book.getAuthor();
-            case 3: return book.getYearOfPublication();
-            case 4: return book.getISBN();
-            case 5: return book.getGenre();
-            default: return null;
-        }
+        return switch (columnIndex) {
+            case 0 -> book.getId();
+            case 1 -> book.getTitle();
+            case 2 -> book.getAuthor();
+            case 3 -> book.getYearOfPublication();
+            case 4 -> book.getISBN();
+            case 5 -> book.getGenre();
+            default -> null;
+        };
     }
 
     @Override

@@ -9,16 +9,16 @@ public class Book {
     private int yearOfPublication;
 
     public Book(int id) {
-        this.id = id;
+        setId(id);
     }
-
-    public Book(String title, String author, String ISBN, String genre, int yearOfPublication) {
-        this.title = title;
-        this.author = author;
-        setISBN(ISBN);
-        this.genre = genre;
-        this.yearOfPublication = yearOfPublication;
-    }
+//
+//    public Book(String title, String author, String ISBN, String genre, int yearOfPublication) {
+//        setTitle(title);
+//        setAuthor(author);
+//        setISBN(ISBN);
+//        setGenre(genre);
+//        setYearOfPublication(yearOfPublication);
+//    }
 
     public String getTitle() {
         return title;
@@ -73,14 +73,19 @@ public class Book {
 
     @Override
     public String toString() {
-//        Title: To Kill a Mockingbird
-//        Author: Harper Lee
-//        ISBN: 9780061120084
-//        Genre: Fiction
         return "Title: " + title + "\n"
                 + "Author: " + author + "\n"
                 + "ISBN: " + ISBN + "\n"
                 + "Genre: " + genre + "\n"
                 + "Year: " + yearOfPublication;
+    }
+
+    public boolean validate() {
+        return getId() > 0 &&
+                !getAuthor().isEmpty() &&
+                !getISBN().isEmpty() &&
+                !getGenre().isEmpty() &&
+                !getTitle().isEmpty() &&
+                getYearOfPublication() > 0;
     }
 }
