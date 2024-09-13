@@ -19,8 +19,8 @@ class BookTableModel extends AbstractTableModel {
     }
 
     public void removeBook(int rowIndex) {
-        books.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+        books.remove(rowIndex);
     }
 
     public Book getBookAt(int rowIndex) {
@@ -66,4 +66,5 @@ class BookTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false; // All cells remain non-editable
     }
+
 }
