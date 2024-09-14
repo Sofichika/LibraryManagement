@@ -3,19 +3,31 @@ package GUI;
 import Lib.Book;
 import Lib.Library;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class LibraryManagementUI extends JFrame {
     private JTable itemTable;
     private BookTableModel tableModel;
     private Library library;
+
+    private ArrayList<Book> lastQueryResults;
     private JButton deleteBtn;
 
+    private JButton queryBtn;
+    private JButton saveBtn;
+
     private static final String[] BUTTONS = {
-        "Create",
-        "Delete",
-        "Export",
-        "Exit",
+            "Create",
+            "Delete",
+            "Query",
+            "Save",
+            "Export",
+            "Exit",
     };
 
     public LibraryManagementUI() {
@@ -59,23 +71,13 @@ public class LibraryManagementUI extends JFrame {
 
         ListSelectionModel selectionModel = itemTable.getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        selectionModel.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                int selectedRow = itemTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    deleteBtn.setEnabled(true);
-                }
-            }
-        });
         JScrollPane tableScrollPane = new JScrollPane(itemTable);
 
         add(tableScrollPane, BorderLayout.CENTER);
     }
 
     private void initButtons() {
-        JPanel buttonPanel = new JPanel(
-            new GridLayout(5, 1, 10, 10)
-        );
+        JPanel buttonPanel = new JPanel(new GridLayout(BUTTONS.length, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         for (String label : BUTTONS) {
@@ -93,13 +95,18 @@ public class LibraryManagementUI extends JFrame {
             case "Create":
                 button.addActionListener(e -> createBook());
                 break;
-            case "Read":
-//                button.addActionListener(e -> deleteSelectedBook());
-                break;
             case "Delete":
-                button.setEnabled(false);
                 deleteBtn = button;
                 button.addActionListener(e -> deleteSelectedBook());
+                break;
+            case "Query":
+                button.addActionListener(e -> queryBooks());
+                break;
+            case "Save":
+                button.addActionListener(e -> saveLibraryState());
+                break;
+            case "Export":
+                button.addActionListener(e -> exportQueryResults());
                 break;
             case "Exit":
                 button.addActionListener(e -> onClose());
@@ -129,24 +136,116 @@ public class LibraryManagementUI extends JFrame {
         }
     }
 
-    private void deleteSelectedBook() {
-        int selectedRow = itemTable.getSelectedRow();
-        Book selectedBook = tableModel.getBookAt(selectedRow);
-        System.out.println(selectedBook);
-        if (selectedBook == null) {
+    private void queryBooks() {
+        String[] options = {"Title", "Author", "ISBN", "Genre"};
+        String field = (String) JOptionPane.showInputDialog(this,
+                "Select search field:",
+                "Query Books",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+        if (field != null) {
+            String value = JOptionPane.showInputDialog(this,
+                    "Enter " + field + " to search for:",
+                    "Query Books",
+                    JOptionPane.QUESTION_MESSAGE);
+
+            if (value != null && !value.trim().isEmpty()) {
+                Book result = library.find(field.toLowerCase(), value);
+                if (result != null) {
+                    lastQueryResults = new ArrayList<>();
+                    lastQueryResults.add(result);
+                    JOptionPane.showMessageDialog(this,
+                            result.toString(),
+                            "Query Result",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "No book found with the given " + field + ".",
+                            "Query Result",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private void saveLibraryState() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Library State");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
+            }
+
+            try (FileWriter writer = new FileWriter(fileToSave)) {
+                for (Book book : library.getBooks()) {
+                    writer.write(book.toString() + "\n\n");
+                }
+                JOptionPane.showMessageDialog(this,
+                        "Library state saved successfully.",
+                        "Save Successful",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error saving library state: " + ex.getMessage(),
+                        "Save Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void exportQueryResults() {
+        if (lastQueryResults == null || lastQueryResults.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No query results to export. Please perform a query first.",
+                    "Export Error",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int result = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this book?",
-            "Delete confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
 
-        if (result == JOptionPane.YES_OPTION) {
-            tableModel.removeBook(selectedRow);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export Query Results");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
+            }
+
+            try (FileWriter writer = new FileWriter(fileToSave)) {
+                for (Book book : lastQueryResults) {
+                    writer.write(book.toString() + "\n\n");
+                }
+                JOptionPane.showMessageDialog(this,
+                        "Query results exported successfully.",
+                        "Export Successful",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error exporting query results: " + ex.getMessage(),
+                        "Export Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    private void deleteSelectedBook() {
+        BookDeletionDialog dialog = new BookDeletionDialog(this, library);
+        dialog.setVisible(true);
+    }
+
+    public void refreshTable() {
+        tableModel.fireTableDataChanged();
     }
 
     private void onClose() {
