@@ -29,6 +29,12 @@ public class BookCreationDialog extends JDialog {
         ISBNField = new JTextField(4);
         genreField = new JTextField(4);
 
+        titleField.setToolTipText("Enter the title of the book.");
+        authorField.setToolTipText("Enter the author's name.");
+        yearField.setToolTipText("Enter the publication year of the book.");
+        ISBNField.setToolTipText("Enter the ISBN of the book.");
+        genreField.setToolTipText("Enter the genre of the book.");
+
         submitButton = new JButton("Create");
         submitButton.setEnabled(false);
         cancelButton = new JButton("Cancel");
