@@ -92,23 +92,23 @@ public class LibraryManagementUI extends JFrame {
         JButton button = new JButton(label);
 
         switch (label) {
-            case "Create":
+            case "Create": ("Click to create a new book record.");
                 button.addActionListener(e -> createBook());
                 break;
-            case "Delete":
+            case "Delete": (Click to delete a selected book record.);
                 deleteBtn = button;
                 button.addActionListener(e -> deleteSelectedBook());
                 break;
-            case "Query":
+            case "Query":("Click to search for books.");
                 button.addActionListener(e -> queryBooks());
                 break;
-            case "Save":
+            case "Save": ("Click to save the current library state.");
                 button.addActionListener(e -> saveLibraryState());
                 break;
-            case "Export":
+            case "Export":("Click to export query results to a file.");
                 button.addActionListener(e -> exportQueryResults());
                 break;
-            case "Exit":
+            case "Exit": (Click to exit the application.);
                 button.addActionListener(e -> onClose());
                 break;
         }
@@ -250,5 +250,6 @@ public class LibraryManagementUI extends JFrame {
 
     private void onClose() {
         System.exit(0);
+        
     }
 }
