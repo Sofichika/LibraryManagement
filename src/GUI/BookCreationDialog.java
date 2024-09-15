@@ -31,7 +31,9 @@ public class BookCreationDialog extends JDialog {
 
         submitButton = new JButton("Create");
         submitButton.setEnabled(false);
+        submitButton.setToolTipText("Click to create the new book with the provided information.");
         cancelButton = new JButton("Cancel");
+        cancelButton.setToolTipText("Click to cancel and close the dialog.");
 
         // Layout
         JPanel panel = new JPanel(new GridBagLayout());
@@ -154,7 +156,7 @@ public class BookCreationDialog extends JDialog {
                 }
             }
         });
-
+        field.setToolTipText("Enter the " + title + " of the book");
         field.setBorder(BorderFactory.createTitledBorder(title));
         return field;
     }
