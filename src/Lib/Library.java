@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
 public class Library {
     private static final String[] VALID_FIELDS = {"title", "author", "isbn", "year", "genre"};
@@ -59,6 +60,42 @@ public class Library {
             }
         }
         return null;
+    }
+
+    public ArrayList<Book> search(String field, String value) {
+        ArrayList<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            switch (field) {
+                case "title":
+                    if (book.getTitle().toLowerCase().contains(value)) {
+                        result.add(book);
+                    }
+                    break;
+                case "author":
+                    if (book.getAuthor().toLowerCase().contains(value)) {
+                        result.add(book);
+                    }
+                    break;
+                case "isbn":
+                    if (book.getISBN().toLowerCase().contains(value)) {
+                        result.add(book);
+                    }
+                    break;
+                case "genre":
+                    if (book.getGenre().toLowerCase().contains(value)) {
+                        result.add(book);
+                    }
+                    break;
+                case "year":
+                    if (book.getYearOfPublication() == Integer.parseInt(value)) {
+                        result.add(book);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("provided field " + field + " does not exist");
+            }
+        }
+        return result;
     }
 
     public ArrayList<Book> getBooks() {

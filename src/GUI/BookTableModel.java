@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
 class BookTableModel extends AbstractTableModel {
-    private ArrayList<Book> books = new ArrayList<>();
+    private final ArrayList<Book> books = new ArrayList<>();
     private final String[] columnNames = {"ID", "Title", "Author", "Year", "ISBN", "Genre"};
 
     public void addBook(Book book) {
@@ -15,12 +15,18 @@ class BookTableModel extends AbstractTableModel {
     }
 
     public void initBooks(ArrayList<Book> bs) {
+        books.clear();
         books.addAll(bs);
     }
 
-    public void removeBook(int rowIndex) {
+    public boolean removeBook(int rowIndex) {
         fireTableRowsDeleted(rowIndex, rowIndex);
         books.remove(rowIndex);
+        return true;
+    }
+
+    public int getIndexOfBook(Book book) {
+        return books.indexOf(book);
     }
 
     public Book getBookAt(int rowIndex) {

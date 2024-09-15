@@ -5,19 +5,21 @@ import Lib.Library;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class BookDeletionDialog extends JDialog {
     private JTextField searchField;
     private JComboBox<String> searchCriteriaBox;
     private JButton deleteButton;
     private JButton cancelButton;
-    private Library library;
-    private LibraryManagementUI parent;
+    private final BookTableModel tableModel;
+    private final Library library;
+    private int indexSelectedBook = -1;
 
-    public BookDeletionDialog(JFrame parent, Library library) {
+    public BookDeletionDialog(JFrame parent, Library library, BookTableModel tableModel) {
         super(parent, "Delete Book", true);
+        this.tableModel = tableModel;
         this.library = library;
-        this.parent = (LibraryManagementUI) parent;
         initComponents();
         layoutComponents();
         addListeners();
@@ -50,7 +52,7 @@ public class BookDeletionDialog extends JDialog {
 
     private void addListeners() {
         deleteButton.addActionListener(e -> deleteBook());
-
+        searchField.addActionListener(e -> deleteBook());
         cancelButton.addActionListener(e -> dispose());
     }
 
@@ -69,20 +71,12 @@ public class BookDeletionDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "No book found with the given " + searchCriteria + ".", "Not Found", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+        indexSelectedBook = tableModel.getIndexOfBook(bookToDelete);
+        dispose();
+    }
 
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this book?\n\n" + bookToDelete.toString(),
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (library.removeRecord(bookToDelete)) {
-                JOptionPane.showMessageDialog(this, "Book deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                parent.refreshTable();
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to delete the book.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    public int showDialog() {
+        setVisible(true);
+        return indexSelectedBook;
     }
 }
