@@ -4,6 +4,8 @@ import Lib.Book;
 import Lib.Library;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -112,7 +114,28 @@ public class LibraryManagementUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
     }
+    
+    private void initSearchBar() {
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
 
+        searchButton.addActionListener(e -> filterBooks(searchField.getText()));
+
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+
+        add(searchPanel, BorderLayout.NORTH);
+    }
+
+    private void filterBooks(String searchTerm) {
+        RowFilter<BookTableModel, Object> rf = RowFilter.regexFilter("(?i)" + searchTerm);
+        TableRowSorter<BookTableModel> sorter = new TableRowSorter<>(tableModel);
+        sorter.setRowFilter(rf);
+        itemTable.setRowSorter(sorter);
+    }
+    
     private void createBook() {
         BookCreationDialog dialog = new BookCreationDialog(this);
         Book newBook = dialog.showDialog();
