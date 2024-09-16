@@ -5,6 +5,7 @@ import Lib.Library;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +41,7 @@ public class BookQueryDialog extends JDialog {
         searchCriteriaBox.setSelectedIndex(0);
         cancelButton = new JButton("Cancel");
         exportButton = new JButton("Export");
+        exportButton.setEnabled(false);
         searchButton = new JButton("Search");
         tableModel = new BookTableModel();
     }
@@ -90,6 +92,7 @@ public class BookQueryDialog extends JDialog {
         tableModel = new BookTableModel();
         itemTable.setModel(tableModel);
         tableModel.initBooks(results);
+        exportButton.setEnabled(!results.isEmpty());
     }
 
     private void exportQueryResults() {
