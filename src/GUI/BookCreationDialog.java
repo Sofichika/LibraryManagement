@@ -7,7 +7,8 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent; // Added import for ActionEvent
+import java.awt.event.ActionListener; // Added import for ActionListener
 
 public class BookCreationDialog extends JDialog {
     private JTextField titleField;
@@ -23,17 +24,20 @@ public class BookCreationDialog extends JDialog {
     public BookCreationDialog(JFrame parent) {
         super(parent, "Create new book", true);
         setMaximumSize(new Dimension(400, 800));
+
+        // initialize text fields
         titleField = new JTextField(20);
         authorField = new JTextField(20);
         yearField = new JTextField(4);
         ISBNField = new JTextField(4);
         genreField = new JTextField(4);
 
+        // initialize buttons
         submitButton = new JButton("Create");
-        submitButton.setEnabled(false);
+        submitButton.setEnabled(false); // initially disables until input is valid
         cancelButton = new JButton("Cancel");
 
-        // Layout
+        // Layout for the dialog
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(16, 5, 5, 5);
